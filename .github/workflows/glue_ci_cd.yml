@@ -1,0 +1,59 @@
+name: Glue PySpark CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 运行 pytest 单元测试
+        run: pytest tests/test_utils.py
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 安装 AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: 上传 Glue Job 脚本（覆盖旧的）
+        run: |
+          aws s3 cp scripts/job.py s3://group-script1/script/job.py
+
+      - name: 打包并上传最新的 utils.zip
+        run: |
+          zip -r utils.zip scripts/utils.py
+          aws s3 cp utils.zip s3://group-script1/script/utils.zip
+
+      - name: 更新 Glue Job 依赖，确保加载最新的 utils.zip
+        run: |
+          aws glue update-job --job-name "GlueCICDJob" --job-update '{
+            "DefaultArguments": {
+              "--extra-py-files": "s3://group-script1/script/utils.zip"
+            }
+          }'
