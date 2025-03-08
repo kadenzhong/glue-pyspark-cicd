@@ -24,6 +24,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          
+      - name: 设置 PYTHONPATH  # ✅ 添加这一步，确保 pytest 能找到 scripts 目录
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/scripts" >> $GITHUB_ENV
 
       - name: 运行 pytest 单元测试
         run: pytest tests/test_utils.py
