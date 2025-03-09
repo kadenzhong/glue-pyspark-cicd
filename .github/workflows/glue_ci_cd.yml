@@ -71,7 +71,7 @@ jobs:
       - name: 更新 Glue Job 依赖，确保加载最新的 utils.zip
         run: |
           aws glue update-job --job-name "GlueCICDJob" --job-update '{
-            "Role": "arn:aws:iam::123456789012:role/AWSGlueServiceRole",
+            "Role": "arn:aws:iam::302263073908:role/service-role/AWSGlueServiceRole",
             "Command": {
               "Name": "glueetl",
               "ScriptLocation": "s3://group-script1/script/job.py"
