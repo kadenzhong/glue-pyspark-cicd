@@ -64,6 +64,9 @@ jobs:
         run: |
           zip -r utils.zip scripts/utils.py
           aws s3 cp utils.zip s3://group-script1/script/utils.zip
+          
+      - name: 检查 GitHub Actions 运行的 AWS 身份  # ✅ 这里检查 AWS 身份
+        run: aws sts get-caller-identity
 
       - name: 更新 Glue Job 依赖，确保加载最新的 utils.zip
         run: |
