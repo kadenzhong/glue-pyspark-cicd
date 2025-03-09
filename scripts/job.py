@@ -7,7 +7,7 @@ from scripts.utils import filter_adult_users  # 引入工具函数
 # ✅ 直接在代码里定义 Glue Job 名称和 S3 路径
 JOB_NAME = "GlueCICDJob"
 INPUT_PATH = "s3://group-script1/script/raw-data/"  # ✅ 你的 S3 输入路径 11
-OUTPUT_PATH = "s3://group-script1/script/processed-data/"  # ✅ 你的 S3 输出路径
+OUTPUT_PATH = "s3://group-script1/script/processed-data/"  # ✅ 你的 S3 输出路径22
 
 # 初始化 Spark 和 Glue 上下文
 spark = SparkSession.builder.appName(JOB_NAME).getOrCreate()
